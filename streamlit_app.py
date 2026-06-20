@@ -14,49 +14,61 @@ st.markdown(
     "от сырых API маркетплейсов до дашбордов, по которым принимают решения."
 )
 
-# Пайплайн-строка
 st.markdown(
-    "<div style='font-size:1.1rem;font-weight:600;color:#475569;margin:0.5rem 0 1rem'>"
+    "<div style='background:#1A1D24;border-radius:10px;padding:12px 16px;"
+    "font-size:1.05rem;font-weight:600;color:#cbd5e1;margin:0.5rem 0 1.5rem'>"
     "Amazon · Walmart · Shopify · Weather &nbsp;→&nbsp; PostgreSQL &nbsp;→&nbsp; BI · AI-агенты"
     "</div>",
     unsafe_allow_html=True,
 )
 
-st.divider()
-
-# ---------- Как приношу ценность ----------
+# ---------- Ценность (карточки) ----------
 st.subheader("Как я приношу ценность бизнесу")
 st.write("Превращаю разрозненные данные в автономную экосистему:")
 
-c1, c2 = st.columns(2)
-with c1:
-    st.markdown("#### 🗄️ Единое хранилище")
-    st.write("Собираю данные со всех площадок (SP-API, Advertising API, Walmart, Shopify) в консолидированный DWH.")
-    st.markdown("#### ⚙️ Полная автоматизация")
-    st.write("~50 задач по расписанию, 24/7. Никаких ручных выгрузок.")
-    st.markdown("#### 🛡️ Отказоустойчивость")
-    st.write("Auto-retry, мониторинг пайплайнов и алерты в Telegram при любом сбое.")
-with c2:
-    st.markdown("#### 📊 Драйв решений")
-    st.write("Интерактивные дашборды, которые обновляются на свежих данных.")
-    st.markdown("#### 🤖 AI-автоматизация рутины")
-    st.write("Ресток-агенты, PPC-алерты, чат-ассистенты на базе Claude/Gemini.")
-    st.markdown("#### 🎯 Результат")
-    st.write("Ноль пропущенных сбоев загрузки и высвобождение часов аналитики в неделю.")
+def card(icon, title, text):
+    return (
+        f"<div style='background:#1A1D24;border-radius:10px;padding:16px 18px;"
+        f"height:100%;'>"
+        f"<div style='font-size:1.05rem;font-weight:600;margin-bottom:4px'>{icon} {title}</div>"
+        f"<div style='font-size:0.9rem;color:#94a3b8;line-height:1.5'>{text}</div>"
+        f"</div>"
+    )
+
+r1c1, r1c2 = st.columns(2)
+with r1c1:
+    st.markdown(card("🗄️", "Единое хранилище", "Все площадки (SP-API, Advertising, Walmart, Shopify) в одном DWH"), unsafe_allow_html=True)
+with r1c2:
+    st.markdown(card("⚙️", "Полная автоматизация", "~50 задач по расписанию, 24/7. Никаких ручных выгрузок"), unsafe_allow_html=True)
+
+st.write("")
+r2c1, r2c2 = st.columns(2)
+with r2c1:
+    st.markdown(card("🛡️", "Отказоустойчивость", "Auto-retry, мониторинг пайплайнов, алерты в Telegram"), unsafe_allow_html=True)
+with r2c2:
+    st.markdown(card("🤖", "AI-агенты", "Ресток, PPC-алерты, чат-ассистенты на Claude/Gemini"), unsafe_allow_html=True)
+
+st.write("")
+r3c1, r3c2 = st.columns(2)
+with r3c1:
+    st.markdown(card("📊", "Драйв решений", "Интерактивные дашборды на свежих данных"), unsafe_allow_html=True)
+with r3c2:
+    st.markdown(card("🎯", "Результат", "Ноль пропущенных сбоев, высвобождение часов аналитики в неделю"), unsafe_allow_html=True)
 
 st.divider()
 
-# ---------- Кейсы ----------
+# ---------- Кейсы (теги) ----------
 st.subheader("Кейсы")
-st.markdown(
-    "Слева в меню — разобранные кейсы с интерактивными дашбордами:\n"
-    "- 🛒 **Amazon Analytics** — ETL по SP-API, Buy Box, маржа\n"
-    "- 🔄 **ETL Orchestrator** — система держит 4 площадки 24/7\n"
-    "- 🔍 **Listing Analyzer** — разбор листинга как продукт (pay-per-run)\n"
-    "- 🌦️ **External Data** — погода как сигнал спроса\n"
-    "- 🎯 **Competitor Intelligence** — трекинг BSR конкурентов по дням\n"
-    "- 🤖 **AI Agents** — агенты на Claude/Gemini"
+st.write("Слева в меню — разобранные кейсы с интерактивными дашбордами:")
+
+tags = ["🛒 Amazon Analytics", "🔄 ETL Orchestrator", "🔍 Listing Analyzer",
+        "🌦️ External Data", "🎯 Competitor Intelligence", "🤖 AI Agents"]
+tags_html = "".join(
+    f"<span style='display:inline-block;background:#1e3a5f;color:#93c5fd;"
+    f"padding:6px 14px;border-radius:8px;margin:4px 6px 4px 0;font-size:0.9rem'>{t}</span>"
+    for t in tags
 )
+st.markdown(f"<div>{tags_html}</div>", unsafe_allow_html=True)
 
 st.divider()
 
@@ -76,4 +88,4 @@ st.info(
     "Реальные архитектуры и объёмы обсуждаю персонально под NDA.",
     icon="🔒",
 )
-st.caption("Made with Streamlit") 
+st.caption("Made with Streamlit")
