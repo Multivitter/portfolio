@@ -54,6 +54,7 @@ st.markdown(
     "- 🔄 **ETL Orchestrator** — система держит 4 площадки 24/7\n"
     "- 🔍 **Listing Analyzer** — разбор листинга как продукт (pay-per-run)\n"
     "- 🌦️ **External Data** — погода как сигнал спроса\n"
+    "- 🎯 **Competitor Intelligence** — трекинг BSR конкурентов по дням\n"
     "- 🤖 **AI Agents** — агенты на Claude/Gemini"
 )
 
