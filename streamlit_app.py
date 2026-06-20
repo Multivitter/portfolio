@@ -76,4 +76,4 @@ st.info(
     "Реальные архитектуры и объёмы обсуждаю персонально под NDA.",
     icon="🔒",
 )
-st.caption("Made with Streamlit")
+st.caption("Made with Streamlit") 
