@@ -1,27 +1,53 @@
 import streamlit as st
+import sys
+from pathlib import Path
 
-st.set_page_config(page_title="Контакты", page_icon="✉️", layout="centered")
+sys.path.append(str(Path(__file__).parent.parent))
+from i18n import lang_selector, t, get_lang
 
-st.title("✉️ Контакты")
+st.set_page_config(page_title="Contact", page_icon="✉️", layout="centered")
+lang_selector()
+lang = get_lang()
 
-st.write(
-    "Готов обсудить вывод бренда на Amazon, аналитику, "
-    "автоматизацию или AI-агентов под вашу задачу."
-)
+T = {
+    "title": {"EN": "✉️ Contact", "RU": "✉️ Контакты", "UK": "✉️ Контакти"},
+    "intro": {
+        "EN": "Happy to discuss launching a brand on Amazon, analytics, automation or AI agents for your task.",
+        "RU": "Готов обсудить вывод бренда на Amazon, аналитику, автоматизацию или AI-агентов под вашу задачу.",
+        "UK": "Готовий обговорити вихід бренду на Amazon, аналітику, автоматизацію або AI-агентів під вашу задачу.",
+    },
+    "how_title": {"EN": "How I work", "RU": "Как работаю", "UK": "Як працюю"},
+    "s1": {
+        "EN": "1. Short call — what hurts, what data you have.",
+        "RU": "1. Короткий созвон — что болит, какие данные есть.",
+        "UK": "1. Короткий дзвінок — що болить, які дані є.",
+    },
+    "s2": {
+        "EN": "2. Prototype on demo data within a few days.",
+        "RU": "2. Прототип на демо-данных за несколько дней.",
+        "UK": "2. Прототип на демо-даних за кілька днів.",
+    },
+    "s3": {
+        "EN": "3. Integration into your environment under NDA.",
+        "RU": "3. Интеграция в ваш контур под NDA.",
+        "UK": "3. Інтеграція у ваш контур під NDA.",
+    },
+    "footer": {
+        "EN": "Real cases and figures shown individually.",
+        "RU": "Реальные кейсы и цифры показываю индивидуально.",
+        "UK": "Реальні кейси та цифри показую індивідуально.",
+    },
+}
 
+st.title(T["title"][lang])
+st.write(T["intro"][lang])
 st.divider()
 
 st.markdown("**Telegram:** `@your_handle`")
 st.markdown("**Email:** `you@example.com`")
-st.markdown("**GitHub:** `github.com/your_handle`")
+st.markdown("**GitHub:** `github.com/Multivitter`")
 
 st.divider()
-
-st.markdown("### Как работаю")
-st.write(
-    "1. Короткий созвон — что болит, какие данные есть.\n"
-    "2. Прототип на демо-данных за несколько дней.\n"
-    "3. Интеграция в ваш контур под NDA."
-)
-
-st.caption("Реальные кейсы и цифры показываю индивидуально.")
+st.markdown(f"### {T['how_title'][lang]}")
+st.write(f"{T['s1'][lang]}\n\n{T['s2'][lang]}\n\n{T['s3'][lang]}")
+st.caption(T["footer"][lang])
