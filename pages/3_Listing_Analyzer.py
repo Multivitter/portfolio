@@ -1,88 +1,127 @@
 import streamlit as st
 import pandas as pd
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).parent.parent))
+from i18n import lang_selector, get_lang
 
 st.set_page_config(page_title="Listing Analyzer", page_icon="🔍", layout="wide")
-
-st.title("🔍 Кейс: Amazon Listing Analyzer (продукт)")
-st.caption("Не скрипт, а законченный продукт с ценой. Демо-данные.")
-
-# ---------- Что это ----------
-st.markdown("### Что это")
-st.write(
-    "Инструмент, который берёт ссылку на товар Amazon и выдаёт разбор листинга: "
-    "что хорошо, что слабо, что чинить в первую очередь. Упакован как продукт "
-    "с оплатой за запуск — продавец платит за конкретный результат, без подписки."
+lang_selector()
+lang = get_lang()
+_home = {"EN": "🏠 Home", "RU": "🏠 Главная", "UK": "🏠 Головна"}[lang]
+st.markdown(
+    f"<style>[data-testid='stSidebarNav'] li:first-child a p{{font-size:0}}"
+    f"[data-testid='stSidebarNav'] li:first-child a p::before"
+    f"{{content:'{_home}';font-size:14px}}</style>",
+    unsafe_allow_html=True,
 )
 
-# ---------- Метрики продукта ----------
+T = {
+    "title": {"EN": "🔍 Case: Amazon Listing Analyzer (product)", "RU": "🔍 Кейс: Amazon Listing Analyzer (продукт)", "UK": "🔍 Кейс: Amazon Listing Analyzer (продукт)"},
+    "cap": {"EN": "Not a script, a finished product with a price. Demo data.", "RU": "Не скрипт, а законченный продукт с ценой. Демо-данные.", "UK": "Не скрипт, а завершений продукт з ціною. Демо-дані."},
+    "what_h": {"EN": "What it is", "RU": "Что это", "UK": "Що це"},
+    "what": {
+        "EN": "A tool that takes an Amazon product link and produces a listing review: what's good, what's weak, what to fix first. Packaged as a pay-per-run product — the seller pays for a concrete result, no subscription.",
+        "RU": "Инструмент, который берёт ссылку на товар Amazon и выдаёт разбор листинга: что хорошо, что слабо, что чинить в первую очередь. Упакован как продукт с оплатой за запуск — продавец платит за конкретный результат, без подписки.",
+        "UK": "Інструмент, що бере посилання на товар Amazon і видає розбір лістингу: що добре, що слабко, що лагодити в першу чергу. Упакований як продукт з оплатою за запуск — продавець платить за конкретний результат, без підписки.",
+    },
+    "m_model": {"EN": "Model", "RU": "Модель", "UK": "Модель"},
+    "m_price": {"EN": "Price per run", "RU": "Цена за запуск", "UK": "Ціна за запуск"},
+    "m_time": {"EN": "Analysis time", "RU": "Время разбора", "UK": "Час розбору"},
+    "checks_h": {"EN": "What it analyzes in a listing", "RU": "Что разбирает листинг", "UK": "Що розбирає лістинг"},
+    "out_h": {"EN": "Example output (demo)", "RU": "Пример вывода (демо)", "UK": "Приклад виводу (демо)"},
+    "out_cap": {"EN": "Representative review of an anonymized product.", "RU": "Условный разбор обезличенного товара.", "UK": "Умовний розбір знеособленого товару."},
+    "score": {"EN": "Overall listing score", "RU": "Общая оценка листинга", "UK": "Загальна оцінка лістингу"},
+    "strong": {"EN": "✅ Strengths", "RU": "✅ Сильные стороны", "UK": "✅ Сильні сторони"},
+    "fix": {"EN": "🔧 To fix", "RU": "🔧 Что чинить", "UK": "🔧 Що лагодити"},
+    "strong_t": {
+        "EN": "- 7 images, has infographics\n- Title within limit, with keywords\n- 4.5 rating with 800+ reviews",
+        "RU": "- 7 изображений, есть инфографика\n- Заголовок в пределах лимита, с ключами\n- Рейтинг 4.5 при 800+ отзывах",
+        "UK": "- 7 зображень, є інфографіка\n- Заголовок у межах ліміту, з ключами\n- Рейтинг 4.5 при 800+ відгуках",
+    },
+    "fix_t": {
+        "EN": "- No A+ content — conversion lost\n- Bullets describe features, not benefits\n- No video in gallery",
+        "RU": "- Нет A+ контента — упускается конверсия\n- Буллеты описывают свойства, не выгоды\n- Нет видео в галерее",
+        "UK": "- Немає A+ контенту — втрачається конверсія\n- Булети описують властивості, не вигоди\n- Немає відео в галереї",
+    },
+    "prio": {"EN": "🎯 Priority #1", "RU": "🎯 Приоритет №1", "UK": "🎯 Пріоритет №1"},
+    "prio_t": {"EN": "Add A+ content — the cheapest conversion lift for this listing.", "RU": "Добавить A+ контент — самый дешёвый рост конверсии для этого листинга.", "UK": "Додати A+ контент — найдешевше зростання конверсії для цього лістингу."},
+    "why_h": {"EN": "Why this matters for business", "RU": "Почему это важно для бизнеса", "UK": "Чому це важливо для бізнесу"},
+    "why": {
+        "EN": "This is an example of a turnkey product: from idea to monetization. The seller gets concrete actions, not a table of metrics. For me — proof I can take a tool to the 'pay for result' stage, not just write code.",
+        "RU": "Это пример продукта под ключ: от идеи до монетизации. Продавец получает конкретные действия, а не таблицу метрик. Для меня — доказательство, что умею доводить инструмент до состояния «платят за результат», а не просто пишу код.",
+        "UK": "Це приклад продукту під ключ: від ідеї до монетизації. Продавець отримує конкретні дії, а не таблицю метрик. Для мене — доказ, що вмію доводити інструмент до стану «платять за результат», а не просто пишу код.",
+    },
+    "under_h": {"EN": "⚙️ Under the hood (for technical audience)", "RU": "⚙️ Под капотом (для технической аудитории)", "UK": "⚙️ Під капотом (для технічної аудиторії)"},
+    "under": {"EN": "Parse product card, run through a rule set + LLM analysis to generate recommendations, package as an Apify Actor with pay-per-run.", "RU": "Парсинг карточки товара, прогон через набор правил + LLM-анализ для генерации рекомендаций, упаковка как Apify Actor с оплатой за запуск.", "UK": "Парсинг картки товару, прогін через набір правил + LLM-аналіз для генерації рекомендацій, упаковка як Apify Actor з оплатою за запуск."},
+    "nda": {"EN": "Real rule logic and prompts — under NDA.", "RU": "Реальная логика правил и промпты — под NDA.", "UK": "Реальна логіка правил і промпти — під NDA."},
+    "blk_title": {"EN": "Title", "RU": "Заголовок", "UK": "Заголовок"},
+    "blk_title_d": {"EN": "Length, keywords, readability, banned words", "RU": "Длина, ключи, читабельность, запрещённые слова", "UK": "Довжина, ключі, читабельність, заборонені слова"},
+    "blk_bul": {"EN": "Bullets", "RU": "Буллеты", "UK": "Булети"},
+    "blk_bul_d": {"EN": "Benefit coverage, structure, keyword density", "RU": "Покрытие выгод, структура, плотность ключей", "UK": "Покриття вигод, структура, щільність ключів"},
+    "blk_img": {"EN": "Images", "RU": "Изображения", "UK": "Зображення"},
+    "blk_img_d": {"EN": "Count, infographics, lifestyle", "RU": "Количество, наличие инфографики, lifestyle", "UK": "Кількість, наявність інфографіки, lifestyle"},
+    "blk_aplus": {"EN": "A+ content", "RU": "A+ контент", "UK": "A+ контент"},
+    "blk_aplus_d": {"EN": "Present or not, block richness", "RU": "Есть/нет, насыщенность блоков", "UK": "Є/немає, насиченість блоків"},
+    "blk_price": {"EN": "Price & Buy Box", "RU": "Цена и Buy Box", "UK": "Ціна та Buy Box"},
+    "blk_price_d": {"EN": "Position vs category", "RU": "Позиция против категории", "UK": "Позиція проти категорії"},
+    "blk_rev": {"EN": "Reviews", "RU": "Отзывы", "UK": "Відгуки"},
+    "blk_rev_d": {"EN": "Rating, count, recency", "RU": "Рейтинг, количество, свежесть", "UK": "Рейтинг, кількість, свіжість"},
+    "col_blk": {"EN": "Block", "RU": "Блок", "UK": "Блок"},
+    "col_eval": {"EN": "What's evaluated", "RU": "Что оценивается", "UK": "Що оцінюється"},
+}
+
+st.title(T["title"][lang])
+st.caption(T["cap"][lang])
+
+st.markdown(f"### {T['what_h'][lang]}")
+st.write(T["what"][lang])
+
 c1, c2, c3 = st.columns(3)
-c1.metric("Модель", "Pay-per-run")
-c2.metric("Цена за запуск", "$2.99")
-c3.metric("Время разбора", "< 1 мин")
+c1.metric(T["m_model"][lang], "Pay-per-run")
+c2.metric(T["m_price"][lang], "$2.99")
+c3.metric(T["m_time"][lang], "< 1 min")
 
 st.divider()
 
-# ---------- Что проверяет ----------
-st.markdown("### Что разбирает листинг")
+st.markdown(f"### {T['checks_h'][lang]}")
 checks = pd.DataFrame([
-    ("Заголовок", "Длина, ключи, читабельность, запрещённые слова"),
-    ("Буллеты", "Покрытие выгод, структура, плотность ключей"),
-    ("Изображения", "Количество, наличие инфографики, lifestyle"),
-    ("A+ контент", "Есть/нет, насыщенность блоков"),
-    ("Цена и Buy Box", "Позиция против категории"),
-    ("Отзывы", "Рейтинг, количество, свежесть"),
-], columns=["Блок", "Что оценивается"])
+    (T["blk_title"][lang], T["blk_title_d"][lang]),
+    (T["blk_bul"][lang], T["blk_bul_d"][lang]),
+    (T["blk_img"][lang], T["blk_img_d"][lang]),
+    (T["blk_aplus"][lang], T["blk_aplus_d"][lang]),
+    (T["blk_price"][lang], T["blk_price_d"][lang]),
+    (T["blk_rev"][lang], T["blk_rev_d"][lang]),
+], columns=[T["col_blk"][lang], T["col_eval"][lang]])
 st.dataframe(checks, use_container_width=True, hide_index=True)
 
 st.divider()
 
-# ---------- Демо-вывод ----------
-st.markdown("### Пример вывода (демо)")
-st.caption("Условный разбор обезличенного товара.")
-
+st.markdown(f"### {T['out_h'][lang]}")
+st.caption(T["out_cap"][lang])
 score = 72
-st.markdown(f"**Общая оценка листинга:** {score}/100")
+st.markdown(f"**{T['score'][lang]}:** {score}/100")
 st.progress(score / 100)
 
 col1, col2 = st.columns(2)
 with col1:
-    st.markdown("#### ✅ Сильные стороны")
-    st.write(
-        "- 7 изображений, есть инфографика\n"
-        "- Заголовок в пределах лимита, с ключами\n"
-        "- Рейтинг 4.5 при 800+ отзывах"
-    )
+    st.markdown(f"#### {T['strong'][lang]}")
+    st.write(T["strong_t"][lang])
 with col2:
-    st.markdown("#### 🔧 Что чинить")
-    st.write(
-        "- Нет A+ контента — упускается конверсия\n"
-        "- Буллеты описывают свойства, не выгоды\n"
-        "- Нет видео в галерее"
-    )
+    st.markdown(f"#### {T['fix'][lang]}")
+    st.write(T["fix_t"][lang])
 
-st.markdown("#### 🎯 Приоритет №1")
-st.info("Добавить A+ контент — самый дешёвый рост конверсии для этого листинга.", icon="💡")
+st.markdown(f"#### {T['prio'][lang]}")
+st.info(T["prio_t"][lang], icon="💡")
 
 st.divider()
 
-# ---------- Почему это сильный кейс ----------
-st.markdown("### Почему это важно для бизнеса")
-st.write(
-    "Это пример продукта под ключ: от идеи до монетизации. "
-    "Продавец получает конкретные действия, а не таблицу метрик. "
-    "Для меня — доказательство, что умею доводить инструмент "
-    "до состояния «платят за результат», а не просто пишу код."
-)
+st.markdown(f"### {T['why_h'][lang]}")
+st.write(T["why"][lang])
 
-with st.expander("⚙️ Под капотом (для технической аудитории)"):
-    st.write(
-        "Парсинг карточки товара, прогон через набор правил + LLM-анализ "
-        "для генерации рекомендаций, упаковка как Apify Actor с оплатой за запуск."
-    )
-    st.code(
-        "url → scrape(listing) → rules_check() + llm_review()\n"
-        "    → score + prioritized_actions → JSON / отчёт",
-        language="text",
-    )
+with st.expander(T["under_h"][lang]):
+    st.write(T["under"][lang])
+    st.code("url → scrape(listing) → rules_check() + llm_review()\n    → score + prioritized_actions → JSON", language="text")
 
-st.info("Реальная логика правил и промпты — под NDA.", icon="🔒")
+st.info(T["nda"][lang], icon="🔒")
