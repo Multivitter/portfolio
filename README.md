@@ -44,35 +44,6 @@
 
 ---
 
-## Запуск локально
-
-```bash
-pip install -r requirements.txt
-streamlit run streamlit_app.py
-```
-
-## Деплой (Streamlit Cloud)
-
-1. Залить репозиторий на GitHub.
-2. На [share.streamlit.io](https://share.streamlit.io) → **New app** → выбрать репо.
-3. Main file: `streamlit_app.py` → получить ссылку.
-4. Вставить ссылку в шапку профиля и в этот README.
-
----
-
-## Структура
-
-```
-streamlit_app.py            # главная
-pages/
-  1_Amazon_Analytics.py     # кейс Amazon (живой дашборд)
-  2_ETL_Orchestrator.py     # кейс ETL-оркестратора + схема
-  3_AI_Agents.py            # кейс AI-агентов
-  4_Contact.py              # контакты
-assets/
-  orchestrator_architecture.svg
-```
-
 ---
 
 📬 **Контакты:**tg  @vitter
