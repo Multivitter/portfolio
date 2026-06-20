@@ -6,25 +6,53 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent))
 from db import fetch_table, db_badge
+from i18n import lang_selector, get_lang
 
 st.set_page_config(page_title="Amazon Analytics", page_icon="🛒", layout="wide")
-
-st.title("🛒 Кейс: Amazon-аналитика под ключ")
-st.caption("Демо-данные. Реальная система работает на SP-API + PostgreSQL.")
-
-st.markdown("### Задача")
-st.write(
-    "Продавец выходит на Amazon и тонет в ручных выгрузках: продажи, "
-    "Buy Box, возвраты, маржа считаются в Excel по ночам. "
-    "Нужна одна панель, которая обновляется сама."
+lang_selector()
+lang = get_lang()
+_home = {"EN": "🏠 Home", "RU": "🏠 Главная", "UK": "🏠 Головна"}[lang]
+st.markdown(
+    f"<style>[data-testid='stSidebarNav'] li:first-child a p{{font-size:0}}"
+    f"[data-testid='stSidebarNav'] li:first-child a p::before"
+    f"{{content:'{_home}';font-size:14px}}</style>",
+    unsafe_allow_html=True,
 )
-st.markdown("### Что построено")
-st.write(
-    "- ETL-пайплайн по SP-API (заказы, цены, инвентарь, возвраты)\n"
-    "- Хранилище на PostgreSQL, планировщик-загрузчики 24/7\n"
-    "- Telegram-бот: алерт при потере Buy Box\n"
-    "- Дашборд (ниже) для ежедневных решений"
-)
+
+T = {
+    "title": {"EN": "🛒 Case: turnkey Amazon analytics", "RU": "🛒 Кейс: Amazon-аналитика под ключ", "UK": "🛒 Кейс: Amazon-аналітика під ключ"},
+    "cap": {"EN": "Demo data. Real system runs on SP-API + PostgreSQL.", "RU": "Демо-данные. Реальная система работает на SP-API + PostgreSQL.", "UK": "Демо-дані. Реальна система працює на SP-API + PostgreSQL."},
+    "task_h": {"EN": "Task", "RU": "Задача", "UK": "Задача"},
+    "task": {
+        "EN": "A seller launches on Amazon and drowns in manual exports: sales, Buy Box, returns, margin counted in Excel overnight. They need one panel that updates itself.",
+        "RU": "Продавец выходит на Amazon и тонет в ручных выгрузках: продажи, Buy Box, возвраты, маржа считаются в Excel по ночам. Нужна одна панель, которая обновляется сама.",
+        "UK": "Продавець виходить на Amazon і тоне в ручних вивантаженнях: продажі, Buy Box, повернення, маржа рахуються в Excel ночами. Потрібна одна панель, що оновлюється сама.",
+    },
+    "built_h": {"EN": "What's built", "RU": "Что построено", "UK": "Що побудовано"},
+    "built": {
+        "EN": "- SP-API ETL pipeline (orders, prices, inventory, returns)\n- PostgreSQL storage, 24/7 scheduler-loaders\n- Telegram bot: alert on Buy Box loss\n- Dashboard (below) for daily decisions",
+        "RU": "- ETL-пайплайн по SP-API (заказы, цены, инвентарь, возвраты)\n- Хранилище на PostgreSQL, планировщик-загрузчики 24/7\n- Telegram-бот: алерт при потере Buy Box\n- Дашборд (ниже) для ежедневных решений",
+        "UK": "- ETL-пайплайн по SP-API (замовлення, ціни, інвентар, повернення)\n- Сховище на PostgreSQL, планувальник-завантажувачі 24/7\n- Telegram-бот: алерт при втраті Buy Box\n- Дашборд (нижче) для щоденних рішень",
+    },
+    "sku": {"EN": "SKU", "RU": "SKU", "UK": "SKU"},
+    "m_rev": {"EN": "Revenue", "RU": "Выручка", "UK": "Виручка"},
+    "m_units": {"EN": "Units sold", "RU": "Юнитов продано", "UK": "Юнітів продано"},
+    "m_bb": {"EN": "Avg Buy Box", "RU": "Средний Buy Box", "UK": "Середній Buy Box"},
+    "m_sku": {"EN": "Active SKUs", "RU": "Активных SKU", "UK": "Активних SKU"},
+    "rev_day": {"EN": "Revenue by day", "RU": "Выручка по дням", "UK": "Виручка по днях"},
+    "bb_sku": {"EN": "Buy Box % by SKU", "RU": "Buy Box % по SKU", "UK": "Buy Box % по SKU"},
+    "by_sku": {"EN": "Breakdown by SKU", "RU": "Срез по SKU", "UK": "Зріз по SKU"},
+    "under_h": {"EN": "⚙️ Under the hood (for technical audience)", "RU": "⚙️ Под капотом (для технической аудитории)", "UK": "⚙️ Під капотом (для технічної аудиторії)"},
+    "nda": {"EN": "All figures synthetic. Real projects under NDA.", "RU": "Все цифры синтетические. Реальные проекты — под NDA.", "UK": "Усі цифри синтетичні. Реальні проєкти — під NDA."},
+}
+
+st.title(T["title"][lang])
+st.caption(T["cap"][lang])
+
+st.markdown(f"### {T['task_h'][lang]}")
+st.write(T["task"][lang])
+st.markdown(f"### {T['built_h'][lang]}")
+st.write(T["built"][lang])
 
 st.divider()
 
@@ -51,39 +79,37 @@ if not is_live:
 db_badge(is_live)
 raw["date"] = pd.to_datetime(raw["date"])
 
-skus = st.multiselect("SKU", sorted(raw.sku.unique()), default=sorted(raw.sku.unique()))
+skus = st.multiselect(T["sku"][lang], sorted(raw.sku.unique()), default=sorted(raw.sku.unique()))
 fdf = raw[raw.sku.isin(skus)]
 
 k1, k2, k3, k4 = st.columns(4)
-k1.metric("Выручка", f"${fdf.revenue.sum():,.0f}")
-k2.metric("Юнитов продано", f"{int(fdf.units.sum()):,}")
-k3.metric("Средний Buy Box", f"{fdf.buybox_pct.mean()*100:.0f}%")
-k4.metric("Активных SKU", fdf.sku.nunique())
+k1.metric(T["m_rev"][lang], f"${fdf.revenue.sum():,.0f}")
+k2.metric(T["m_units"][lang], f"{int(fdf.units.sum()):,}")
+k3.metric(T["m_bb"][lang], f"{fdf.buybox_pct.mean()*100:.0f}%")
+k4.metric(T["m_sku"][lang], fdf.sku.nunique())
 
 st.divider()
 
 c1, c2 = st.columns(2)
 with c1:
-    st.markdown("**Выручка по дням**")
+    st.markdown(f"**{T['rev_day'][lang]}**")
     st.line_chart(fdf.groupby("date").revenue.sum())
 with c2:
-    st.markdown("**Buy Box % по SKU**")
+    st.markdown(f"**{T['bb_sku'][lang]}**")
     st.bar_chart(fdf.groupby("sku").buybox_pct.mean() * 100)
 
-st.markdown("**Срез по SKU**")
+st.markdown(f"**{T['by_sku'][lang]}**")
 agg = fdf.groupby("sku").agg(
     units=("units", "sum"), revenue=("revenue", "sum"), buybox=("buybox_pct", "mean"),
 ).round(2)
 st.dataframe(agg, use_container_width=True)
 
-with st.expander("⚙️ Под капотом (для технической аудитории)"):
+with st.expander(T["under_h"][lang]):
     st.code(
-        "# Дашборд читает из PostgreSQL\n"
         "SELECT sku, date, units, revenue, buybox_pct\n"
         "FROM amazon_sales ORDER BY date;\n\n"
-        "# Реальная система: ~20 SP-API загрузчиков,\n"
-        "# идемпотентный upsert, алерты в Telegram",
+        "# ~20 SP-API loaders, idempotent upsert, Telegram alerts",
         language="sql",
     )
 
-st.info("Все цифры синтетические. Реальные проекты — под NDA.", icon="🔒")
+st.info(T["nda"][lang], icon="🔒")
