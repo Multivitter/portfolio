@@ -115,9 +115,9 @@ st.dataframe(
 
 # сводка
 c1, c2, c3 = st.columns(3)
-c1.metric("🟡 Дублей", int(df["Дубль"].sum()))
-c2.metric("🔴 Негативов", int(df["Негатив"].sum()))
-c3.metric("🔵 Бренд", int(df["Бренд"].sum()))
+c1.metric("🟡 Дублей", int(df["Дубль"].astype(int).sum()))
+c2.metric("🔴 Негативов", int(df["Негатив"].astype(int).sum()))
+c3.metric("🔵 Бренд", int(df["Бренд"].astype(int).sum()))
 
 st.divider()
 
