@@ -68,9 +68,9 @@ def highlight_trend(row):
     for i in range(1, len(vals)):
         prev, cur = vals[i - 1], vals[i]
         if cur < prev:        # BSR упал = лучше
-            styles[i] = "background-color: #c8f7c5"
+            styles[i] = "background-color: #1d9e75; color: #ffffff"
         elif cur > prev:      # BSR вырос = хуже
-            styles[i] = "background-color: #f7c5c5"
+            styles[i] = "background-color: #d85a30; color: #ffffff"
     return styles
 
 styled = df.style.apply(highlight_trend, axis=1).format("{:,.0f}")
@@ -112,4 +112,4 @@ with st.expander("⚙️ Под капотом (для технической а
         "быстрого визуального скана движения."
     )
 
-st.info("Реальные бренды, ASIN и ниша — под NDA.", icon="🔒")
+st.info("Реальные бренды, ASIN и ниша — под NDA.", icon="🔒") 
