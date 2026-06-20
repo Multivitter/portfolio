@@ -112,5 +112,4 @@ with st.expander("⚙️ Под капотом (для технической а
         "быстрого визуального скана движения."
     )
 
-st.info("Реальные бренды, ASIN и ниша — под NDA.", icon="🔒")# Competitor Intelligence
-# Placeholder file - paste your real Streamlit page code here.
+st.info("Реальные бренды, ASIN и ниша — под NDA.", icon="🔒")
