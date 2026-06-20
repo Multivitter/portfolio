@@ -34,15 +34,16 @@ def make_states():
     rows = []
     for code,(name,pop_share) in states.items():
         temp = round(rng.uniform(18, 42), 1)
-        # продажи примерно пропорциональны населению + шум
-        units = int(pop_share * 350 + rng.normal(0, 60))
-        units = max(50, units)
-        # penetration = доля продаж / доля населения
+        # сила бренда в штате (0.3..2.2) создаёт реалистичный разброс penetration
+        strength = rng.uniform(0.3, 2.2)
+        units = max(50, int(pop_share * 200 * strength + rng.normal(0, 30)))
         rows.append({"code":code,"state":name,"temp":temp,"units":units,
                      "pop_share":pop_share})
     df = pd.DataFrame(rows)
+    # обе доли в одинаковых единицах (проценты) → penetration около 1
     df["sales_share"] = df["units"] / df["units"].sum() * 100
-    df["penetration"] = (df["sales_share"] / df["pop_share"]).round(2)
+    df["pop_share_pct"] = df["pop_share"] / df["pop_share"].sum() * 100
+    df["penetration"] = (df["sales_share"] / df["pop_share_pct"]).round(2)
     return df
 
 df = make_states()
