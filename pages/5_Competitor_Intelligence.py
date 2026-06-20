@@ -1,13 +1,17 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).parent.parent))
+from db import fetch_table, db_badge
 
 st.set_page_config(page_title="Competitor Intelligence", page_icon="🎯", layout="wide")
 
 st.title("🎯 Кейс: конкурентная разведка (BSR-трекинг)")
 st.caption("Слежу за позициями конкурентов по дням. Данные обезличены/синтетические.")
 
-# ---------- Задача ----------
 st.markdown("### Задача")
 st.write(
     "В нише десятки конкурентов, у каждого — несколько товаров. "
@@ -18,73 +22,69 @@ st.write(
 
 st.markdown("### Решение")
 st.write(
-    "Ежедневный парсинг BSR конкурентов в одну таблицу. Подсветка движения "
-    "цветом: зелёный — позиция улучшилась (BSR упал, товар продаётся лучше), "
-    "красный — ухудшилась. Разрез по категориям товаров."
+    "Ежедневный парсинг BSR конкурентов в одну таблицу (PostgreSQL). "
+    "Подсветка движения цветом: зелёный — позиция улучшилась (BSR упал, "
+    "товар продаётся лучше), красный — ухудшилась. Разрез по категориям."
 )
 
 st.divider()
 
-# ---------- Генерация обезличенных данных ----------
 @st.cache_data
-def make_data():
+def synthetic():
     rng = np.random.default_rng(11)
     categories = {
-        "Базовый слой": ["Brand A — модель 1", "Brand A — модель 2",
-                         "Brand B — модель 1", "Brand C — модель 1"],
-        "Худи": ["Brand A — худи", "Brand B — худи", "Brand D — худи"],
-        "Носки": ["Brand B — носки", "Brand C — носки", "Brand E — носки"],
+        "Base layer": ["Brand A — model 1", "Brand A — model 2",
+                       "Brand B — model 1", "Brand C — model 1"],
+        "Hoodie": ["Brand A — hoodie", "Brand B — hoodie", "Brand D — hoodie"],
+        "Socks": ["Brand B — socks", "Brand C — socks", "Brand E — socks"],
     }
-    dates = pd.date_range("2026-01-14", periods=8, freq="D")
-    data = {}
+    dates = pd.date_range("2025-01-01", periods=8, freq="D")
+    rows = []
     for cat, products in categories.items():
-        rows = []
         for p in products:
-            base = rng.integers(2000, 60000)
-            series = []
-            val = base
-            for _ in dates:
-                # случайное блуждание BSR
+            val = rng.integers(2000, 60000)
+            for d in dates:
                 val = max(500, int(val + rng.normal(0, val * 0.15)))
-                series.append(val)
-            rows.append([p] + series)
-        cols = ["Товар"] + [d.strftime("%d.%m") for d in dates]
-        data[cat] = pd.DataFrame(rows, columns=cols)
-    return data
+                rows.append({"product": p, "category": cat, "date": d, "bsr": val})
+    return pd.DataFrame(rows)
 
-data = make_data()
+raw = fetch_table("competitors_bsr", "product, category, date, bsr", order_by="date")
+is_live = raw is not None and not raw.empty
+if not is_live:
+    raw = synthetic()
 
-# ---------- Выбор категории ----------
-cat = st.selectbox("Категория товара", list(data.keys()))
-df = data[cat].set_index("Товар")
+db_badge(is_live)
+raw["date"] = pd.to_datetime(raw["date"])
+
+cat = st.selectbox("Категория товара", sorted(raw["category"].unique()))
+sub = raw[raw["category"] == cat].copy()
+sub["d"] = sub["date"].dt.strftime("%d.%m")
+df = sub.pivot_table(index="product", columns="d", values="bsr", aggfunc="first")
 
 st.markdown(f"### BSR по дням — {cat}")
 st.caption("Чем меньше BSR, тем лучше продаётся. 🟢 позиция улучшилась · 🔴 ухудшилась (день к дню).")
 
-# ---------- Подсветка динамики ----------
 def highlight_trend(row):
     styles = [""] * len(row)
     vals = row.values
     for i in range(1, len(vals)):
         prev, cur = vals[i - 1], vals[i]
-        if cur < prev:        # BSR упал = лучше
+        if pd.isna(prev) or pd.isna(cur):
+            continue
+        if cur < prev:
             styles[i] = "background-color: #1d9e75; color: #ffffff"
-        elif cur > prev:      # BSR вырос = хуже
+        elif cur > prev:
             styles[i] = "background-color: #d85a30; color: #ffffff"
     return styles
 
-styled = df.style.apply(highlight_trend, axis=1).format("{:,.0f}")
+styled = df.style.apply(highlight_trend, axis=1).format("{:,.0f}", na_rep="—")
 st.dataframe(styled, use_container_width=True)
 
 st.divider()
 
-# ---------- Сводка движения ----------
 st.markdown("### Кто растёт, кто падает (за период)")
 first_col, last_col = df.columns[0], df.columns[-1]
-summary = pd.DataFrame({
-    "Старт BSR": df[first_col],
-    "Конец BSR": df[last_col],
-})
+summary = pd.DataFrame({"Старт BSR": df[first_col], "Конец BSR": df[last_col]})
 summary["Изменение"] = summary["Старт BSR"] - summary["Конец BSR"]
 summary["Тренд"] = summary["Изменение"].apply(
     lambda x: "🟢 растёт" if x > 0 else ("🔴 падает" if x < 0 else "⚪ ровно")
@@ -97,7 +97,6 @@ st.dataframe(
 
 st.divider()
 
-# ---------- Ценность ----------
 st.markdown("### Ценность для бизнеса")
 st.write(
     "Видно в реальном времени, кто из конкурентов разгоняется (повод проверить "
@@ -108,8 +107,15 @@ st.write(
 with st.expander("⚙️ Под капотом (для технической аудитории)"):
     st.write(
         "Ежедневный сбор BSR по списку ASIN конкурентов через сервис парсинга, "
-        "запись в таблицу/БД с историей по дням, условное форматирование для "
-        "быстрого визуального скана движения."
+        "запись в PostgreSQL (таблица competitors_bsr) с историей по дням. "
+        "Дашборд читает из базы через st.secrets, условное форматирование "
+        "для быстрого визуального скана движения."
+    )
+    st.code(
+        "SELECT product, category, date, bsr\n"
+        "FROM competitors_bsr\n"
+        "ORDER BY category, product, date;",
+        language="sql",
     )
 
-st.info("Реальные бренды, ASIN и ниша — под NDA.", icon="🔒") 
+st.info("Реальные бренды, ASIN и ниша — под NDA.", icon="🔒")
