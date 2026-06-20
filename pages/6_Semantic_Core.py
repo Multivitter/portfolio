@@ -87,7 +87,7 @@ for kw in keywords:
     is_dup = norm in seen
     seen[norm] = seen.get(norm, 0) + 1
     is_neg = any(f" {neg} " in f" {norm} " for neg in negatives)
-    is_brand = bool(brand_norm) and re.search(rf"\b{re.escape(brand_norm)}", norm)
+    is_brand = bool(brand_norm) and bool(re.search(rf"\b{re.escape(brand_norm)}", norm))
     results.append({"kw": kw, "norm": norm, "dup": is_dup, "neg": is_neg, "brand": is_brand})
 
 df = pd.DataFrame(results)
