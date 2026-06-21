@@ -43,9 +43,9 @@ st.title(T["title"][lang])
 st.write(T["intro"][lang])
 st.divider()
 
-st.markdown("**Telegram:** `@your_handle`")
-st.markdown("**Email:** `you@example.com`")
-st.markdown("**GitHub:** `github.com/Multivitter`")
+st.markdown("**Telegram:** [@vitter](https://t.me/vitter)")
+st.markdown("**Email:** multivitter@gmail.com")
+st.markdown("**GitHub:** [github.com/Multivitter](https://github.com/Multivitter)")
 
 st.divider()
 st.markdown(f"### {T['how_title'][lang]}")
