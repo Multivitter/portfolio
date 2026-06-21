@@ -137,14 +137,11 @@ tk3.metric(T["tm_rating"][lang], "4.5★")
 tk4.metric(T["tm_rev"][lang], "249")
 
 st.markdown(f"**{T['top_list_h'][lang]}**")
-leaders = pd.DataFrame([
-    ("#1", "Brand A — base layer", "$44", "4.6★", "9.4K", "🟢 Amazon's Choice"),
-    ("#2", "Brand B — thermal tee", "$39", "4.6★", "14.1K", "🟢 easy entry"),
-    ("#3", "Brand C — base layer", "$45", "4.5★", "9.4K", "🟡 medium"),
-    ("#4", "Brand D — merino set", "$52", "4.4★", "3.2K", "🟢 easy entry"),
-    ("#5", "Brand E — wool top", "$37", "4.3★", "1.8K", "🔴 hard"),
-], columns=["#", "Listing", "Price", "Rating", "Reviews", "Entry"])
-st.dataframe(leaders, use_container_width=True, hide_index=True)
+_img = Path(__file__).parent.parent / "assets" / "top_niche.png"
+if _img.exists():
+    st.image(str(_img), use_container_width=True)
+else:
+    st.info("📷 assets/top_niche.png", icon="📷")
 st.caption(T["top_cap"][lang])
 
 st.divider()
