@@ -123,6 +123,12 @@ with sc3:
 
 st.caption(T["how_cap"][lang])
 
+_photo1 = Path(__file__).parent.parent / "assets" / "Photo1.png"
+if _photo1.exists():
+    st.image(str(_photo1), use_container_width=True)
+else:
+    st.info("📷 assets/Photo1.png", icon="📷")
+
 st.divider()
 
 # ---------- Топ ниши: AI-анализ лидеров (обезличенно) ----------
