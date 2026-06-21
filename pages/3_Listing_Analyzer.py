@@ -30,6 +30,14 @@ T = {
     "m_price": {"EN": "Price per run", "RU": "Цена за запуск", "UK": "Ціна за запуск"},
     "m_time": {"EN": "Analysis time", "RU": "Время разбора", "UK": "Час розбору"},
     "checks_h": {"EN": "What it analyzes in a listing", "RU": "Что разбирает листинг", "UK": "Що розбирає лістинг"},
+    "how_h": {"EN": "How it works — 3 steps", "RU": "Как работает — 3 шага", "UK": "Як працює — 3 кроки"},
+    "s1_t": {"EN": "1️⃣ Paste the listing URL", "RU": "1️⃣ Вставь URL листинга", "UK": "1️⃣ Встав URL лістингу"},
+    "s1_d": {"EN": "A link from Amazon.com / .de / .fr / .it — any marketplace. Up to 5 competitors can be added.", "RU": "Ссылку с Amazon.com / .de / .fr / .it — любой маркетплейс. Можно добавить до 5 конкурентов.", "UK": "Посилання з Amazon.com / .de / .fr / .it — будь-який маркетплейс. Можна додати до 5 конкурентів."},
+    "s2_t": {"EN": "2️⃣ Run the analysis", "RU": "2️⃣ Запусти анализ", "UK": "2️⃣ Запусти аналіз"},
+    "s2_d": {"EN": "AI analyzes photos, text, BSR, A+ and competitors. Full pass — 2-3 minutes.", "RU": "AI анализирует фото, текст, BSR, A+ и конкурентов. Полный анализ — 2-3 минуты.", "UK": "AI аналізує фото, текст, BSR, A+ і конкурентів. Повний аналіз — 2-3 хвилини."},
+    "s3_t": {"EN": "3️⃣ Read the results", "RU": "3️⃣ Читай результаты", "UK": "3️⃣ Читай результати"},
+    "s3_d": {"EN": "Overview → Health Score. Photos → Vision. COSMO/Rufus → AI visibility. Top niches → market.", "RU": "Обзор → Health Score. Фото → Vision. COSMO/Rufus → AI-видимость. Топ ниши → рынок.", "UK": "Огляд → Health Score. Фото → Vision. COSMO/Rufus → AI-видимість. Топ ніші → ринок."},
+    "how_cap": {"EN": "Listing 3.0 — AI analysis on COSMO + Rufus + Vision.", "RU": "Listing 3.0 — AI-анализ на основе COSMO + Rufus + Vision.", "UK": "Listing 3.0 — AI-аналіз на основі COSMO + Rufus + Vision."},
     "out_h": {"EN": "Example output (demo)", "RU": "Пример вывода (демо)", "UK": "Приклад виводу (демо)"},
     "out_cap": {"EN": "Representative review of an anonymized product.", "RU": "Условный разбор обезличенного товара.", "UK": "Умовний розбір знеособленого товару."},
     "score": {"EN": "Overall listing score", "RU": "Общая оценка листинга", "UK": "Загальна оцінка лістингу"},
@@ -82,6 +90,29 @@ c1, c2, c3 = st.columns(3)
 c1.metric(T["m_model"][lang], "Pay-per-run")
 c2.metric(T["m_price"][lang], "$2.99")
 c3.metric(T["m_time"][lang], "< 1 min")
+
+st.divider()
+
+# ---------- Как работает: 3 шага ----------
+st.markdown(f"### {T['how_h'][lang]}")
+
+def step_card(title, body, accent):
+    return (
+        f"<div style='background:#1A1D24;border-top:3px solid {accent};"
+        f"border-radius:8px;padding:16px 18px;height:100%'>"
+        f"<div style='font-weight:700;font-size:1rem;margin-bottom:8px;color:#e2e8f0'>{title}</div>"
+        f"<div style='font-size:0.88rem;color:#cbd5e1;line-height:1.6'>{body}</div></div>"
+    )
+
+sc1, sc2, sc3 = st.columns(3)
+with sc1:
+    st.markdown(step_card(T["s1_t"][lang], T["s1_d"][lang], "#4c8bf5"), unsafe_allow_html=True)
+with sc2:
+    st.markdown(step_card(T["s2_t"][lang], T["s2_d"][lang], "#16a34a"), unsafe_allow_html=True)
+with sc3:
+    st.markdown(step_card(T["s3_t"][lang], T["s3_d"][lang], "#8b5cf6"), unsafe_allow_html=True)
+
+st.caption(T["how_cap"][lang])
 
 st.divider()
 
