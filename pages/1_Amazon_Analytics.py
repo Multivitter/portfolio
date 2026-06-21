@@ -89,7 +89,8 @@ st.write(T["scope_intro"][lang])
 
 modules = [
     "📈 Sales & Traffic", "💰 Finance", "💸 Reimbursement", "🛒 Orders",
-    "📦 Inventory", "↩️ Returns", "📝 Listings", "🔎 Keepa", "💲 Price / BuyBox",
+    "📦 Inventory", "↩️ Returns", "📝 Listings", "🔎 Keepa Listings",
+    "🎯 Custom Quality", "✉️ Review Requests", "💲 Price / BuyBox",
     "🎯 BuyBox Monitor", "📦 FBA Operations", "🌦️ Weather", "💵 Margin",
     "🧾 Taxes", "⭐ Reviews", "📣 Customer Feedback", "📊 Brand Analytics",
     "📦 Restock Agent", "📈 Forecast", "🩺 ETL Status",
