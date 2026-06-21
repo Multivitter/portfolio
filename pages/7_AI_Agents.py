@@ -95,18 +95,23 @@ st.markdown(f"### {T['demo_h'][lang]}")
 st.write(T["demo_intro"][lang])
 
 questions = [T["q1"][lang], T["q2"][lang], T["q3"][lang]]
-answers = {T["q1"][lang]: T["a1"][lang], T["q2"][lang]: T["a2"][lang], T["q3"][lang]: T["a3"][lang]}
+answer_list = [T["a1"][lang], T["a2"][lang], T["a3"][lang]]
 
-if "ai_pick" not in st.session_state:
-    st.session_state.ai_pick = questions[0]
+if "ai_idx" not in st.session_state:
+    st.session_state.ai_idx = 0
 
 cols = st.columns(3)
 for i, q in enumerate(questions):
     if cols[i].button(q, use_container_width=True, key=f"q{i}"):
-        st.session_state.ai_pick = q
+        st.session_state.ai_idx = i
 
-with st.chat_message("assistant"):
-    st.markdown(answers[st.session_state.ai_pick])
+_ans = answer_list[st.session_state.ai_idx].replace("\n", "<br>")
+st.markdown(
+    f"<div style='background:#1A1D24;border-left:4px solid #1d9e75;"
+    f"border-radius:8px;padding:16px 18px;margin-top:8px'>"
+    f"<div style='font-size:0.92rem;color:#e2e8f0;line-height:1.7'>🤖 {_ans}</div></div>",
+    unsafe_allow_html=True,
+)
 
 st.caption(T["demo_cap"][lang])
 
