@@ -121,8 +121,8 @@ def card(title, body, border):
     return (
         f"<div style='background:#1A1D24;border-left:4px solid {border};"
         f"border-radius:8px;padding:14px 16px;margin-bottom:12px;height:100%'>"
-        f"<div style='font-weight:600;font-size:0.95rem;margin-bottom:6px'>{title}</div>"
-        f"<div style='font-size:0.88rem;color:#cbd5e1;line-height:1.6'>{body_html}</div></div>"
+        f"<div style='font-weight:700;font-size:1rem;margin-bottom:8px;color:{border}'>{title}</div>"
+        f"<div style='font-size:0.9rem;color:#e2e8f0;line-height:1.65'>{body_html}</div></div>"
     )
 
 ca, cb = st.columns(2)
