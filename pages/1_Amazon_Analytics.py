@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import plotly.graph_objects as go
 import sys
 from pathlib import Path
 
@@ -49,6 +50,16 @@ T = {
         "UK": "Не один дашборд, а BI-платформа: 25+ розділів звітів в одному місці, усі живляться від ETL-пайплайна. Частина напрямків:",
     },
     "scope_cap": {"EN": "Module list only — figures and internals under NDA.", "RU": "Только список модулей — цифры и внутренности под NDA.", "UK": "Лише список модулів — цифри та нутрощі під NDA."},
+    "pl_h": {"EN": "💹 P&L waterfall (demo)", "RU": "💹 P&L waterfall (демо)", "UK": "💹 P&L waterfall (демо)"},
+    "pl_intro": {
+        "EN": "From gross revenue to net profit: where money is lost along the way (fees, refunds, promos). Synthetic figures.",
+        "RU": "От валовой выручки к чистой прибыли: где теряются деньги по пути (комиссии, возвраты, промо). Цифры синтетические.",
+        "UK": "Від валової виручки до чистого прибутку: де втрачаються гроші по дорозі (комісії, повернення, промо). Цифри синтетичні.",
+    },
+    "pl_gross": {"EN": "Gross", "RU": "Выручка", "UK": "Виручка"},
+    "pl_net": {"EN": "Net", "RU": "Чистая", "UK": "Чиста"},
+    "pl_margin": {"EN": "Margin", "RU": "Маржа", "UK": "Маржа"},
+    "pl_cap": {"EN": "Structure is real, numbers are illustrative — actuals under NDA.", "RU": "Структура реальная, числа иллюстративные — реальные под NDA.", "UK": "Структура реальна, числа ілюстративні — реальні під NDA."},
     "under_h": {"EN": "⚙️ Under the hood (for technical audience)", "RU": "⚙️ Под капотом (для технической аудитории)", "UK": "⚙️ Під капотом (для технічної аудиторії)"},
     "nda": {"EN": "All figures synthetic. Real projects under NDA.", "RU": "Все цифры синтетические. Реальные проекты — под NDA.", "UK": "Усі цифри синтетичні. Реальні проєкти — під NDA."},
 }
@@ -82,6 +93,43 @@ chips = "".join(
 )
 st.markdown(f"<div>{chips}</div>", unsafe_allow_html=True)
 st.caption(T["scope_cap"][lang])
+
+st.divider()
+
+# ---------- P&L waterfall (демо, синтетика) ----------
+st.markdown(f"### {T['pl_h'][lang]}")
+st.write(T["pl_intro"][lang])
+
+gross = 100.0
+fees, refunds, promos, adj = -29.0, -17.0, -3.0, 2.0
+net = gross + fees + refunds + promos + adj
+
+fig_pl = go.Figure(go.Waterfall(
+    orientation="v",
+    measure=["absolute", "relative", "relative", "relative", "relative", "total"],
+    x=[T["pl_gross"][lang], "Fees", "Refunds", "Promos", "Adj", T["pl_net"][lang]],
+    y=[gross, fees, refunds, promos, adj, net],
+    text=[f"${gross:.0f}K", f"${fees:.0f}K", f"${refunds:.0f}K",
+          f"${promos:.0f}K", f"+${adj:.0f}K", f"${net:.0f}K"],
+    textposition="outside",
+    connector={"line": {"color": "#64748b"}},
+    increasing={"marker": {"color": "#4c8bf5"}},
+    decreasing={"marker": {"color": "#e05a4a"}},
+    totals={"marker": {"color": "#4c8bf5"}},
+))
+fig_pl.update_layout(
+    height=380, margin=dict(l=0, r=0, t=10, b=0),
+    paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+    font=dict(color="#cbd5e1"), showlegend=False,
+    yaxis=dict(gridcolor="#1e293b", title="$K"),
+)
+st.plotly_chart(fig_pl, use_container_width=True)
+
+cc1, cc2, cc3 = st.columns(3)
+cc1.metric(T["pl_gross"][lang], f"${gross:.0f}K")
+cc2.metric(T["pl_net"][lang], f"${net:.0f}K")
+cc3.metric(T["pl_margin"][lang], f"{net/gross*100:.0f}%")
+st.caption(T["pl_cap"][lang])
 
 st.divider()
 
