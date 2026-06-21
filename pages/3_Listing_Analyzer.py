@@ -38,6 +38,15 @@ T = {
     "s3_t": {"EN": "3️⃣ Read the results", "RU": "3️⃣ Читай результаты", "UK": "3️⃣ Читай результати"},
     "s3_d": {"EN": "Overview → Health Score. Photos → Vision. COSMO/Rufus → AI visibility. Top niches → market.", "RU": "Обзор → Health Score. Фото → Vision. COSMO/Rufus → AI-видимость. Топ ниши → рынок.", "UK": "Огляд → Health Score. Фото → Vision. COSMO/Rufus → AI-видимість. Топ ніші → ринок."},
     "how_cap": {"EN": "Listing 3.0 — AI analysis on COSMO + Rufus + Vision.", "RU": "Listing 3.0 — AI-анализ на основе COSMO + Rufus + Vision.", "UK": "Listing 3.0 — AI-аналіз на основі COSMO + Rufus + Vision."},
+    "top_h": {"EN": "🔥 Niche leaders — AI scan (demo)", "RU": "🔥 Топ ниши — AI-анализ лидеров (демо)", "UK": "🔥 Топ ніші — AI-аналіз лідерів (демо)"},
+    "top_intro": {"EN": "Enter a niche query — the tool finds top sellers and shows what makes their listings win. Synthetic data, anonymized brands.", "RU": "Вводишь запрос ниши — инструмент находит топ-продавцов и показывает, что делает их листинги лучшими. Данные синтетические, бренды обезличены.", "UK": "Вводиш запит ніші — інструмент знаходить топ-продавців і показує, що робить їхні лістинги кращими. Дані синтетичні, бренди знеособлені."},
+    "top_query": {"EN": "Example query:", "RU": "Пример запроса:", "UK": "Приклад запиту:"},
+    "tm_comp": {"EN": "Competitors", "RU": "Конкурентов", "UK": "Конкурентів"},
+    "tm_price": {"EN": "Avg price", "RU": "Средняя цена", "UK": "Середня ціна"},
+    "tm_rating": {"EN": "Avg rating", "RU": "Ср. рейтинг", "UK": "Сер. рейтинг"},
+    "tm_rev": {"EN": "Avg reviews", "RU": "Ср. отзывов", "UK": "Сер. відгуків"},
+    "top_list_h": {"EN": "Top listings", "RU": "Топ листинги", "UK": "Топ лістинги"},
+    "top_cap": {"EN": "Real search returns live data; brands here are anonymized for the demo.", "RU": "Реальный поиск выдаёт живые данные; бренды здесь обезличены для демо.", "UK": "Реальний пошук видає живі дані; бренди тут знеособлені для демо."},
     "out_h": {"EN": "Example output (demo)", "RU": "Пример вывода (демо)", "UK": "Приклад виводу (демо)"},
     "out_cap": {"EN": "Representative review of an anonymized product.", "RU": "Условный разбор обезличенного товара.", "UK": "Умовний розбір знеособленого товару."},
     "score": {"EN": "Overall listing score", "RU": "Общая оценка листинга", "UK": "Загальна оцінка лістингу"},
@@ -113,6 +122,30 @@ with sc3:
     st.markdown(step_card(T["s3_t"][lang], T["s3_d"][lang], "#8b5cf6"), unsafe_allow_html=True)
 
 st.caption(T["how_cap"][lang])
+
+st.divider()
+
+# ---------- Топ ниши: AI-анализ лидеров (обезличенно) ----------
+st.markdown(f"### {T['top_h'][lang]}")
+st.write(T["top_intro"][lang])
+st.markdown(f"**{T['top_query'][lang]}** `merino wool base layer`")
+
+tk1, tk2, tk3, tk4 = st.columns(4)
+tk1.metric(T["tm_comp"][lang], "12")
+tk2.metric(T["tm_price"][lang], "$42")
+tk3.metric(T["tm_rating"][lang], "4.5★")
+tk4.metric(T["tm_rev"][lang], "249")
+
+st.markdown(f"**{T['top_list_h'][lang]}**")
+leaders = pd.DataFrame([
+    ("#1", "Brand A — base layer", "$44", "4.6★", "9.4K", "🟢 Amazon's Choice"),
+    ("#2", "Brand B — thermal tee", "$39", "4.6★", "14.1K", "🟢 easy entry"),
+    ("#3", "Brand C — base layer", "$45", "4.5★", "9.4K", "🟡 medium"),
+    ("#4", "Brand D — merino set", "$52", "4.4★", "3.2K", "🟢 easy entry"),
+    ("#5", "Brand E — wool top", "$37", "4.3★", "1.8K", "🔴 hard"),
+], columns=["#", "Listing", "Price", "Rating", "Reviews", "Entry"])
+st.dataframe(leaders, use_container_width=True, hide_index=True)
+st.caption(T["top_cap"][lang])
 
 st.divider()
 
