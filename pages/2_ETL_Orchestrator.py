@@ -54,6 +54,8 @@ T = {
     "col_task": {"EN": "Task", "RU": "Задача", "UK": "Задача"},
     "col_plat": {"EN": "Platform", "RU": "Площадка", "UK": "Майданчик"},
     "dist": {"EN": "Distribution by platform (in this slice)", "RU": "Распределение по площадкам (в этом срезе)", "UK": "Розподіл по майданчиках (у цьому зрізі)"},
+    "mon_h": {"EN": "Live monitor (screenshots)", "RU": "Живой монитор (скриншоты)", "UK": "Живий монітор (скріншоти)"},
+    "mon_cap": {"EN": "ETL Monitor: loader status + analytics on success rate. Anonymized.", "RU": "ETL Monitor: статус загрузчиков + аналитика по success rate. Обезличено.", "UK": "ETL Monitor: статус завантажувачів + аналітика по success rate. Знеособлено."},
     "under_h": {"EN": "⚙️ Under the hood (for technical audience)", "RU": "⚙️ Под капотом (для технической аудитории)", "UK": "⚙️ Під капотом (для технічної аудиторії)"},
     "under": {"EN": "Python, threads + ThreadPoolExecutor, per-task timeouts, ETL log in PostgreSQL, stdout parsing for alert metrics, monitors on daemon threads.", "RU": "Python, потоки + ThreadPoolExecutor, отдельные таймауты на каждый тип задачи, ETL-лог в PostgreSQL, парсинг stdout для метрик в алерты, мониторы на daemon-потоках.", "UK": "Python, потоки + ThreadPoolExecutor, окремі таймаути на кожен тип задачі, ETL-лог у PostgreSQL, парсинг stdout для метрик в алерти, монітори на daemon-потоках."},
     "nda": {"EN": "Real brand names, DB schemas and tokens — under NDA.", "RU": "Реальные названия брендов, схемы БД и токены — под NDA.", "UK": "Реальні назви брендів, схеми БД і токени — під NDA."},
@@ -72,6 +74,31 @@ if _svg.exists():
     )
 else:
     st.info("assets/orchestrator_architecture.svg")
+
+st.divider()
+
+# ---------- Живой монитор: два скриншота ETL Monitor ----------
+st.markdown(f"### {T['mon_h'][lang]}")
+st.caption(T["mon_cap"][lang])
+
+_assets = Path(__file__).parent.parent / "assets"
+
+def _find(name):
+    p = _assets / name
+    if p.exists():
+        return p
+    return next((q for q in _assets.glob("*") if q.name.strip().lower() == name.lower()), p)
+
+_photo3 = _find("Photo3.png")
+_photo4 = _find("Photo4.png")
+if _photo4.exists():
+    st.image(str(_photo4), use_container_width=True)
+else:
+    st.info("📷 assets/Photo4.png", icon="📷")
+if _photo3.exists():
+    st.image(str(_photo3), use_container_width=True)
+else:
+    st.info("📷 assets/Photo3.png", icon="📷")
 
 st.divider()
 
