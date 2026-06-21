@@ -150,11 +150,15 @@ else:
     st.info("📷 assets/top_niche.png", icon="📷")
 st.caption(T["top_cap"][lang])
 
-_photo2 = Path(__file__).parent.parent / "assets" / "Photo2.png"
+_assets = Path(__file__).parent.parent / "assets"
+_photo2 = _assets / "Photo2.png"
+if not _photo2.exists():
+    # регистронезависимый поиск на случай Photo2.PNG / photo2.png
+    _photo2 = next((p for p in _assets.glob("*") if p.name.lower() == "photo2.png"), _photo2)
 if _photo2.exists():
     st.image(str(_photo2), use_container_width=True)
 else:
-    st.info("📷 assets/Photo2.png", icon="📷")
+    st.info(f"📷 не найдено: {_photo2} | в assets: {[p.name for p in _assets.glob('*')]}", icon="📷")
 
 st.divider()
 
