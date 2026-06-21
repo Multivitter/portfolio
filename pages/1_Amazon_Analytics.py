@@ -60,6 +60,15 @@ T = {
     "pl_net": {"EN": "Net", "RU": "Чистая", "UK": "Чиста"},
     "pl_margin": {"EN": "Margin", "RU": "Маржа", "UK": "Маржа"},
     "pl_cap": {"EN": "Structure is real, numbers are illustrative — actuals under NDA.", "RU": "Структура реальная, числа иллюстративные — реальные под NDA.", "UK": "Структура реальна, числа ілюстративні — реальні під NDA."},
+    "ai_h": {"EN": "🧠 AI summary of the dashboard (demo)", "RU": "🧠 AI-вывод по дашборду (демо)", "UK": "🧠 AI-висновок по дашборду (демо)"},
+    "ai_intro": {"EN": "The agent reads the metrics above and gives a short verdict — what's good, what to watch.", "RU": "Агент читает метрики выше и выдаёт краткий вердикт — что хорошо, на что смотреть.", "UK": "Агент читає метрики вище та видає короткий вердикт — що добре, на що дивитися."},
+    "ai_body": {
+        "EN": "📊 **Overall: healthy, but one weak spot.** Revenue trend is stable, top SKU is BASE-TEE-02 (38% of revenue). **Watch:** HOOD-ZIP-03 — Buy Box averaging 61%, below the others; likely a pricing competitor. **Recommendation:** check this SKU's price daily, the rest can stay on the weekly cycle. Net margin holds around 53%, no anomalies in fees.",
+        "RU": "📊 **В целом: здорово, но одно слабое место.** Тренд выручки стабильный, топ-SKU — BASE-TEE-02 (38% выручки). **Внимание:** HOOD-ZIP-03 — Buy Box в среднем 61%, ниже остальных; вероятно, ценовой конкурент. **Рекомендация:** проверять цену по этому SKU ежедневно, остальные можно на недельном цикле. Чистая маржа держится около 53%, аномалий в комиссиях нет.",
+        "UK": "📊 **Загалом: здорово, але одне слабке місце.** Тренд виручки стабільний, топ-SKU — BASE-TEE-02 (38% виручки). **Увага:** HOOD-ZIP-03 — Buy Box у середньому 61%, нижче за інших; ймовірно, ціновий конкурент. **Рекомендація:** перевіряти ціну по цьому SKU щодня, решту можна на тижневому циклі. Чиста маржа тримається близько 53%, аномалій у комісіях немає.",
+    },
+    "ai_btn": {"EN": "🔄 Regenerate summary", "RU": "🔄 Сгенерировать вывод", "UK": "🔄 Згенерувати висновок"},
+    "ai_cap": {"EN": "Demo on synthetic data. Real agent runs on Claude/Gemini over live DB.", "RU": "Демо на синтетике. Реальный агент работает на Claude/Gemini поверх живой БД.", "UK": "Демо на синтетиці. Реальний агент працює на Claude/Gemini поверх живої БД."},
     "under_h": {"EN": "⚙️ Under the hood (for technical audience)", "RU": "⚙️ Под капотом (для технической аудитории)", "UK": "⚙️ Під капотом (для технічної аудиторії)"},
     "nda": {"EN": "All figures synthetic. Real projects under NDA.", "RU": "Все цифры синтетические. Реальные проекты — под NDA.", "UK": "Усі цифри синтетичні. Реальні проєкти — під NDA."},
 }
@@ -180,6 +189,18 @@ agg = fdf.groupby("sku").agg(
     units=("units", "sum"), revenue=("revenue", "sum"), buybox=("buybox_pct", "mean"),
 ).round(2)
 st.dataframe(agg, use_container_width=True)
+
+st.divider()
+
+# ---------- AI-вывод по дашборду ----------
+st.markdown(f"### {T['ai_h'][lang]}")
+st.write(T["ai_intro"][lang])
+st.button(T["ai_btn"][lang], key="ai_regen")
+with st.chat_message("assistant"):
+    st.markdown(T["ai_body"][lang])
+st.caption(T["ai_cap"][lang])
+
+st.divider()
 
 with st.expander(T["under_h"][lang]):
     st.code(
