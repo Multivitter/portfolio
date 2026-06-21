@@ -150,6 +150,12 @@ else:
     st.info("📷 assets/top_niche.png", icon="📷")
 st.caption(T["top_cap"][lang])
 
+_photo2 = Path(__file__).parent.parent / "assets" / "Photo2.png"
+if _photo2.exists():
+    st.image(str(_photo2), use_container_width=True)
+else:
+    st.info("📷 assets/Photo2.png", icon="📷")
+
 st.divider()
 
 st.markdown(f"### {T['checks_h'][lang]}")
