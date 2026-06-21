@@ -42,6 +42,13 @@ T = {
     "rev_day": {"EN": "Revenue by day", "RU": "Выручка по дням", "UK": "Виручка по днях"},
     "bb_sku": {"EN": "Buy Box % by SKU", "RU": "Buy Box % по SKU", "UK": "Buy Box % по SKU"},
     "by_sku": {"EN": "Breakdown by SKU", "RU": "Срез по SKU", "UK": "Зріз по SKU"},
+    "scope_h": {"EN": "System scale — what the platform covers", "RU": "Масштаб системы — что покрывает платформа", "UK": "Масштаб системи — що покриває платформа"},
+    "scope_intro": {
+        "EN": "Not a single dashboard but a BI platform: 25+ report sections in one place, all fed by the ETL pipeline. A few of the directions:",
+        "RU": "Не один дашборд, а BI-платформа: 25+ разделов отчётов в одном месте, все питаются от ETL-пайплайна. Часть направлений:",
+        "UK": "Не один дашборд, а BI-платформа: 25+ розділів звітів в одному місці, усі живляться від ETL-пайплайна. Частина напрямків:",
+    },
+    "scope_cap": {"EN": "Module list only — figures and internals under NDA.", "RU": "Только список модулей — цифры и внутренности под NDA.", "UK": "Лише список модулів — цифри та нутрощі під NDA."},
     "under_h": {"EN": "⚙️ Under the hood (for technical audience)", "RU": "⚙️ Под капотом (для технической аудитории)", "UK": "⚙️ Під капотом (для технічної аудиторії)"},
     "nda": {"EN": "All figures synthetic. Real projects under NDA.", "RU": "Все цифры синтетические. Реальные проекты — под NDA.", "UK": "Усі цифри синтетичні. Реальні проєкти — під NDA."},
 }
@@ -53,6 +60,28 @@ st.markdown(f"### {T['task_h'][lang]}")
 st.write(T["task"][lang])
 st.markdown(f"### {T['built_h'][lang]}")
 st.write(T["built"][lang])
+
+st.divider()
+
+# ---------- Масштаб системы: карта модулей ----------
+st.markdown(f"### {T['scope_h'][lang]}")
+st.write(T["scope_intro"][lang])
+
+modules = [
+    "📈 Sales & Traffic", "💰 Finance", "💸 Reimbursement", "🛒 Orders",
+    "📦 Inventory", "↩️ Returns", "📝 Listings", "🔎 Keepa", "💲 Price / BuyBox",
+    "🎯 BuyBox Monitor", "📦 FBA Operations", "🌦️ Weather", "💵 Margin",
+    "🧾 Taxes", "⭐ Reviews", "📣 Customer Feedback", "📊 Brand Analytics",
+    "📦 Restock Agent", "📈 Forecast", "🩺 ETL Status",
+]
+chips = "".join(
+    f"<span style='display:inline-block;background:#1A1D24;color:#cbd5e1;"
+    f"padding:6px 12px;border-radius:8px;margin:4px 6px 4px 0;font-size:0.85rem;"
+    f"border:1px solid #2a2f3a'>{m}</span>"
+    for m in modules
+)
+st.markdown(f"<div>{chips}</div>", unsafe_allow_html=True)
+st.caption(T["scope_cap"][lang])
 
 st.divider()
 
