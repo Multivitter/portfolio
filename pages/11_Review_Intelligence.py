@@ -224,10 +224,28 @@ geo_tbl = geo.sort_values("reviews", ascending=False).rename(columns={
     "country": T["g_country"][lang], "reviews": T["g_reviews"][lang],
     "avg": T["g_avg"][lang], "pos": T["g_pos"][lang], "neg": T["g_neg"][lang],
 })
+
+_neg_col = T["g_neg"][lang]
+_neg_min = geo_tbl[_neg_col].min()
+_neg_max = geo_tbl[_neg_col].max()
+_neg_rng = (_neg_max - _neg_min) or 1.0
+
+
+def _neg_shade(col):
+    # manual red gradient (no matplotlib dependency)
+    out = []
+    for v in col:
+        t = (v - _neg_min) / _neg_rng
+        r, g, b = 255, int(210 - 150 * t), int(210 - 150 * t)
+        txt = "#ffffff" if t > 0.55 else "#7a1010"
+        out.append(f"background-color: rgb({r},{g},{b}); color: {txt}")
+    return out
+
+
 st.dataframe(
-    geo_tbl.style.format({
+    geo_tbl.style.apply(_neg_shade, subset=[_neg_col]).format({
         T["g_avg"][lang]: "{:.2f}", T["g_pos"][lang]: "{:.1f}%", T["g_neg"][lang]: "{:.1f}%",
-    }).background_gradient(subset=[T["g_neg"][lang]], cmap="Reds"),
+    }),
     use_container_width=True, hide_index=True,
 )
 
