@@ -3,4 +3,4 @@ pandas>=2.0
 numpy>=1.26
 supabase>=2.0
 plotly>=5.20
- 
+matplotlib
