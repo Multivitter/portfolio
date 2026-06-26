@@ -15,9 +15,14 @@ T = {
         "UK": "AI & Data Architect | Перетворюю e-commerce операції на автономні системи",
     },
     "intro": {
-        "EN": "Happy to discuss launching a brand on Amazon, sales forecasting, analytics, automation or AI agents for your task.",
-        "RU": "Готов обсудить вывод бренда на Amazon, прогнозирование продаж, аналитику, автоматизацию или AI-агентов под вашу задачу.",
-        "UK": "Готовий обговорити вихід бренду на Amazon, прогнозування продажів, аналітику, автоматизацію або AI-агентів під вашу задачу.",
+        "EN": "I turn e-commerce data into decisions: sales forecasting, analytics and autonomous systems for your task.",
+        "RU": "Превращаю данные e-commerce в решения: прогнозирование продаж, аналитику и автономные системы под вашу задачу.",
+        "UK": "Перетворюю дані e-commerce на рішення: прогнозування продажів, аналітику та автономні системи під вашу задачу.",
+    },
+    "stack": {
+        "EN": "Amazon · Walmart · Shopify · 1C\n\nETL · PostgreSQL · AI agents · Streamlit",
+        "RU": "Amazon · Walmart · Shopify · 1С\n\nETL · PostgreSQL · AI-агенты · Streamlit",
+        "UK": "Amazon · Walmart · Shopify · 1С\n\nETL · PostgreSQL · AI-агенти · Streamlit",
     },
     "how_title": {"EN": "How I work", "RU": "Как работаю", "UK": "Як працюю"},
     "s1": {
@@ -45,6 +50,7 @@ st.title(T["title"][lang])
 st.markdown(f"### {T['name'][lang]}")
 st.caption(T["role"][lang])
 st.write(T["intro"][lang])
+st.caption(T["stack"][lang])
 st.divider()
 st.markdown("**Telegram:** [@vitter](https://t.me/vitter)")
 st.markdown("**Email:** multivitter@gmail.com")
