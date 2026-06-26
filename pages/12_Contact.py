@@ -15,9 +15,9 @@ T = {
         "UK": "AI & Data Architect | Перетворюю e-commerce операції на автономні системи",
     },
     "intro": {
-        "EN": "Happy to discuss launching a brand on Amazon, analytics, automation or AI agents for your task.",
-        "RU": "Готов обсудить вывод бренда на Amazon, аналитику, автоматизацию или AI-агентов под вашу задачу.",
-        "UK": "Готовий обговорити вихід бренду на Amazon, аналітику, автоматизацію або AI-агентів під вашу задачу.",
+        "EN": "Happy to discuss launching a brand on Amazon, sales forecasting, analytics, automation or AI agents for your task.",
+        "RU": "Готов обсудить вывод бренда на Amazon, прогнозирование продаж, аналитику, автоматизацию или AI-агентов под вашу задачу.",
+        "UK": "Готовий обговорити вихід бренду на Amazon, прогнозування продажів, аналітику, автоматизацію або AI-агентів під вашу задачу.",
     },
     "how_title": {"EN": "How I work", "RU": "Как работаю", "UK": "Як працюю"},
     "s1": {
